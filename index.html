@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Key System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #a0a0a0;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            color: #fff;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 2px rgba(0, 120, 255, 0.5);
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0078ff, #00c6ff);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 120, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .message.success {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            display: block;
+        }
+        
+        .message.error {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff4444;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            display: block;
+        }
+        
+        .message.info {
+            background: rgba(0, 120, 255, 0.2);
+            color: #00c6ff;
+            border: 1px solid rgba(0, 120, 255, 0.3);
+            display: block;
+        }
+        
+        .keys-list {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .keys-list h3 {
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .key-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .key-code {
+            color: #00ff00;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status.valid {
+            background: #00ff00;
+            box-shadow: 0 0 5px #00ff00;
+        }
+        
+        .status.invalid {
+            background: #ff4444;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+        }
+        
+        .api-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .api-section h4 {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .api-url {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #00c6ff;
+            word-break: break-all;
+        }
+        
+        .webhook-input {
+            margin-top: 10px;
+        }
+        
+        .webhook-input input {
+            font-size: 12px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 Roblox Key System</h1>
+        <div class="subtitle">Enter your key to activate premium features</div>
+        
+        <div class="input-group">
+            <label>Your Key</label>
+            <input type="text" id="keyInput" placeholder="Enter your key here...">
+        </div>
+        
+        <button class="btn-primary" onclick="verifyKey()">Verify Key</button>
+        <button class="btn-secondary" onclick="generateKey()">Generate New Key</button>
+        
+        <div id="message" class="message"></div>
+        
+        <div class="api-section">
+            <h4>📡 API Endpoints (For Roblox Script)</h4>
+            <div class="api-url" id="apiUrl">Loading...</div>
+            <div class="webhook-input">
+                <input type="text" id="webhookUrl" placeholder="Discord Webhook URL (optional)" style="width: 100%; margin-top: 10px;">
+            </div>
+        </div>
+        
+        <div class="keys-list">
+            <h3>📋 Available Keys</h3>
+            <div id="keysList"></div>
+        </div>
+        
+        <div class="footer">
+            <p>Powered by Roblox Key System API | <span id="timestamp"></span></p>
+        </div>
+    </div>
+    
+    <script>
+        let validKeys = [
+            { key: "Key_Random123", used: false, createdAt: Date.now() },
+            { key: "Key_Random456", used: false, createdAt: Date.now() },
+            { key: "Key_Random789", used: false, createdAt: Date.now() },
+            { key: "FREE_KEY_2024", used: false, createdAt: Date.now() },
+            { key: "PREMIUM_001", used: false, createdAt: Date.now() },
+            { key: "VIP_ACCESS_2025", used: false, createdAt: Date.now() }
+        ];
+        
+        let generatedKeys = [];
+        let webhookUrl = localStorage.getItem('webhookUrl') || '';
+        
+        const API_URL = window.location.origin;
+        
+        document.getElementById('timestamp').innerHTML = new Date().toLocaleString();
+        document.getElementById('apiUrl').innerHTML = API_URL + '/api/verify?key=YOUR_KEY';
+        document.getElementById('webhookUrl').value = webhookUrl;
+        
+        document.getElementById('webhookUrl').addEventListener('change', function() {
+            webhookUrl = this.value;
+            localStorage.setItem('webhookUrl', webhookUrl);
+        });
+        
+        async function sendWebhook(message, key, playerName = 'Website User') {
+            if (!webhookUrl) return;
+            
+            const webhookData = {
+                content: message,
+                embeds: [{
+                    title: "Key System Event",
+                    color: key ? 0x00ff00 : 0xff0000,
+                    fields: [
+                        { name: "Event", value: message, inline: true },
+                        { name: "Key", value: key || "N/A", inline: true },
+                        { name: "User", value: playerName, inline: true },
+                        { name: "Timestamp", value: new Date().toLocaleString(), inline: true }
+                    ],
+                    footer: { text: "Roblox Key System" }
+                }]
+            };
+            
+            try {
+                await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(webhookData)
+                });
+            } catch(e) {
+                console.log('Webhook failed:', e);
+            }
+        }
+        
+        async function verifyKey() {
+            const keyInput = document.getElementById('keyInput');
+            const key = keyInput.value.trim();
+            const messageDiv = document.getElementById('message');
+            
+            if (!key) {
+                showMessage('Please enter a key!', 'error');
+                return;
+            }
+            
+            showMessage('Verifying key...', 'info');
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const allKeys = [...validKeys, ...generatedKeys];
+            const foundKey = allKeys.find(k => k.key === key);
+            
+            if (foundKey) {
+                if (foundKey.used) {
+                    showMessage('❌ Key already used!', 'error');
+                    await sendWebhook('❌ Key Already Used', key);
+                } else {
+                    foundKey.used = true;
+                    showMessage('✅ Key accepted! Access granted.', 'success');
+                    keyInput.value = '';
+                    await sendWebhook('✅ Key Redeemed Successfully', key);
+                    loadKeys();
+                    
+                    showMessage('✅ Access granted! You can now use the features.', 'success');
+                }
+            } else {
+                showMessage('❌ Invalid key!', 'error');
+                await sendWebhook('❌ Invalid Key Attempt', key);
+            }
+        }
+        
+        function generateRandomKey() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let key = "Key_";
+            for (let i = 0; i < 16; i++) {
+                key += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return key;
+        }
+        
+        async function generateKey() {
+            const messageDiv = document.getElementById('message');
+            showMessage('Generating new key...', 'info');
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const newKey = generateRandomKey();
+            const keyData = {
+                key: newKey,
+                used: false,
+                createdAt: Date.now(),
+                generated: true
+            };
+            
+            generatedKeys.push(keyData);
+            
+            showMessage(`✅ New key generated: ${newKey}`, 'success');
+            await sendWebhook('🆕 New Key Generated', newKey);
+            loadKeys();
+            
+            const keyInput = document.getElementById('keyInput');
+            keyInput.value = newKey;
+        }
+        
+        function copyKey(key) {
+            navigator.clipboard.writeText(key);
+            showMessage(`✅ Copied: ${key}`, 'success');
+            setTimeout(() => {
+                const msg = document.getElementById('message');
+                if (msg.className === 'message success') {
+                    msg.style.display = 'none';
+                }
+            }, 2000);
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            setTimeout(() => {
+                if (messageDiv.className === `message ${type}`) {
+                    messageDiv.style.display = 'none';
+                }
+            }, 3000);
+        }
+        
+        function loadKeys() {
+            const allKeys = [...validKeys, ...generatedKeys];
+            const keysList = document.getElementById('keysList');
+            keysList.innerHTML = '';
+            
+            const availableKeys = allKeys.filter(k => !k.used);
+            const usedKeys = allKeys.filter(k => k.used);
+            
+            if (availableKeys.length > 0) {
+                const availTitle = document.createElement('div');
+                availTitle.style.color = '#00ff00';
+                availTitle.style.fontSize = '12px';
+                availTitle.style.marginBottom = '5px';
+                availTitle.innerHTML = '✅ Available Keys:';
+                keysList.appendChild(availTitle);
+                
+                availableKeys.forEach(key => {
+                    const keyItem = document.createElement('div');
+                    keyItem.className = 'key-item';
+                    keyItem.innerHTML = `
+                        <span class="key-code">${key.key}</span>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span class="status valid"></span>
+                            <span class="copy-btn" onclick="copyKey('${key.key}')">Copy</span>
+                        </div>
+                    `;
+                    keysList.appendChild(keyItem);
+                });
+            }
+            
+            if (usedKeys.length > 0) {
+                const usedTitle = document.createElement('div');
+                usedTitle.style.color = '#ff4444';
+                usedTitle.style.fontSize = '12px';
+                usedTitle.style.marginTop = '10px';
+                usedTitle.style.marginBottom = '5px';
+                usedTitle.innerHTML = '❌ Used Keys:';
+                keysList.appendChild(usedTitle);
+                
+                usedKeys.forEach(key => {
+                    const keyItem = document.createElement('div');
+                    keyItem.className = 'key-item';
+                    keyItem.style.opacity = '0.5';
+                    keyItem.innerHTML = `
+                        <span class="key-code">${key.key}</span>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span class="status invalid"></span>
+                            <span class="copy-btn" onclick="copyKey('${key.key}')">Copy</span>
+                        </div>
+                    `;
+                    keysList.appendChild(keyItem);
+                });
+            }
+            
+            const totalSpan = document.createElement('div');
+            totalSpan.style.marginTop = '10px';
+            totalSpan.style.fontSize = '11px';
+            totalSpan.style.color = 'rgba(255,255,255,0.5)';
+            totalSpan.innerHTML = `Total: ${allKeys.length} | Available: ${availableKeys.length} | Used: ${usedKeys.length}`;
+            keysList.appendChild(totalSpan);
+        }
+        
+        document.getElementById('keyInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyKey();
+            }
+        });
+        
+        loadKeys();
+        
+        setInterval(() => {
+            localStorage.setItem('generatedKeys', JSON.stringify(generatedKeys));
+        }, 5000);
+        
+        const savedKeys = localStorage.getItem('generatedKeys');
+        if (savedKeys) {
+            try {
+                generatedKeys = JSON.parse(savedKeys);
+                loadKeys();
+            } catch(e) {}
+        }
+        
+        console.log('Key System Ready!');
+        console.log('API URL:', API_URL);
+    </script>
+</body>
+  </html>
